@@ -11,6 +11,7 @@ import os
 from os import walk
 import shutil
 
+regex = re.compile(r'^(?!\.)(.*)(_(\(?\d+|_cover(-clean)?)\)?\.(jpg|wmv|mp4|jpeg))$')
 
 
 def get_command_line():
@@ -23,7 +24,6 @@ def get_command_line():
 
 
 def split_file_name(fileName):
-    regex = re.compile(r'^(?!\.)(.*)(_(\(?\d+|_cover(-clean)?)\)?\.(jpg|wmv|mp4|jpeg))$')
     if len(fileName) == 0:
         return (None, None)
     matches = re.match(regex, fileName)
@@ -38,8 +38,11 @@ def collect_similar_names(folder_name):
     keys = {}
     if os.path.isdir(folder_name):
         for (dirpath, dirnames, filenames) in walk(folder_name):
-            file_list.extend(filenames)
-            break
+            file : str
+            for file in filenames:
+                match = re.match(regex, file)
+                if match is not None:
+                    file_list.append(file)
     elif os.path.isfile(folder_name):
         with open(folder_name) as f:
             file_list = f.readlines()
@@ -59,29 +62,42 @@ def collect_similar_names(folder_name):
     return keys
 
 
-def create_dir(dir_name):
+def create_dir_name(dir_name):
     count = 0
-    tmp_dir_name = ''
+    tmp_dir_name = ""
     if os.path.isdir(dir_name):
         while os.path.isdir(dir_name):
             count += 1
-            tmp_dir_name = '{0:s}_({1:2d})'.format(dir_name, count)
+            tmp_dir_name = r'{0:s}_({1:2d})'.format(dir_name, count)
         dir_name = tmp_dir_name
-    pwd = os.getcwd() + '\\'
+    pwd = os.getcwd() + r'\\'
     pwd += dir_name
     return os.mkdir(pwd)
 
 
 def move_to_folders(files: dict):
-    # pwd = os.getcwd()
+    moved_files = {}
+    return_val = ""
     for key in files.keys():
-        directory = create_dir(key)
-        file_names = files[key]
-        for file in file_names:
-            dst = directory
-            shutil.move(file, directory)
+        moved_files[key] = []
+        directory = create_dir_name(key)
+        if directory is None:
+            moved_files[key] = None
+        else:
+            file_names = files[key]
+            for file in file_names:
+                dst = directory
+                return_val = shutil.move(file, directory)
+                expected_value = "{}/{}".format(directory, file)
+                if return_val != expected_value:
+                    moved_files[key].append(None)
+                else:
+                    moved_files[key].append(return_val)
+    return moved_files
 
-
+def parse_files_create_folder(folder_name):
+    folders_and_files = collect_similar_names(folder_name)
+    move_to_folders(folders_and_files)
 
 if __name__ == '__main__':
     file = "/\\foo.txt"
