@@ -100,7 +100,7 @@ def parse_files_create_folder(folder_name):
     move_to_folders(folders_and_files)
 
 if __name__ == '__main__':
-    file = "/\\foo.txt"
+    file = "foo.txt"
     #pwd = os.getcwd()
     #os.chdir(pwd)
     # pwd += '\\' + 'foo.txt'
