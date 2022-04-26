@@ -62,37 +62,49 @@ def collect_similar_names(folder_name):
     return keys
 
 
-def create_dir_name(dir_name):
+def create_dir_name(dir_name, path = '.'):
+    '''
+    Keyword Arguments
+    :param dir_name: the name of the directory to be create
+    :param path: the path where the director is to be created, default to the current directory
+    :return: the path to the new directory
+    '''
     count = 0
     tmp_dir_name = ""
-    if os.path.isdir(dir_name):
-        while os.path.isdir(dir_name):
+    while True:
+        try:
+            os.mkdir(dir_name)
+            break
+        except FileExistsError:
             count += 1
-            tmp_dir_name = r'{0:s}_({1:2d})'.format(dir_name, count)
-        dir_name = tmp_dir_name
-    pwd = "{}/{}".format(os.getcwd(), dir_name)
-    path = os.mkdir(pwd)
-    return path
+            tmp_dir_name = '{0:s}_({1:2d})'.format(dir_name, count)
+            dir_name = tmp_dir_name
+    pwd = "{}/{}".format(path, dir_name)
+    if pwd == "/":
+        pwd = None
+    return pwd
 
 
-def move_to_folders(files: dict):
+def move_to_folders(files: dict, path = '.'):
     moved_files = {}
     return_val = ""
     for key in files.keys():
         moved_files[key] = []
-        directory = create_dir_name(key)
+        directory = create_dir_name(key, path)
+        '''
+        if no directory created then just fill the array with None
+        '''
         if directory is None:
             moved_files[key] = None
         else:
             file_names = files[key]
             for file in file_names:
                 dst = directory
-                return_val = shutil.move(file, directory)
+                try:
+                    return_val = shutil.move(file, directory)
+                except sys.audit as event_str:
+                    print("Error: When create directory {} error {} was thrown\n".format(directory, event_str) )
                 expected_value = "{}/{}".format(directory, file)
-                if return_val != expected_value:
-                    moved_files[key].append(None)
-                else:
-                    moved_files[key].append(return_val)
     return moved_files
 
 def parse_files_create_folder(folder_name):
@@ -100,7 +112,7 @@ def parse_files_create_folder(folder_name):
     move_to_folders( folders_and_files)
 
 if __name__ == '__main__':
-    file = "foo.txt"
+    file = "tests/foo.txt"
     #pwd = os.getcwd()
     #os.chdir(pwd)
     # pwd += '\\' + 'foo.txt'
