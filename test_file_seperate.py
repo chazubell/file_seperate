@@ -8,8 +8,8 @@ Created on Wed Apr  6 07:47:45 2022
 # content of test_file_seperate.py
 import os
 import tempfile
-
 import seperator
+import shutil
 
 
 
@@ -87,8 +87,16 @@ def test_collect_similar_names():
 def test_create_dir():
     with tempfile.TemporaryDirectory() as tempdirname:
         os.chdir(tempdirname)
-        seperator.create_dir_name('femjoy_Ellen - Bedtime Story') == tempdirname + '/' + 'femjoy_Ellen - Bedtime Story'
+        assert seperator.create_dir_name('femjoy_Ellen - Bedtime Story') == tempdirname + '/' + 'femjoy_Ellen - Bedtime Story'
 
 def test_move_to_folders():
     keys = seperator.collect_similar_names("/Volumes/One Touch/2022-04-12/Earmiller/femjoy_Aida")
+    with tempfile.TemporaryDirectory() as tempdirname:
+        print(tempdirname)
+
+        if os.chdir(tempdirname):
+
+            tempdirname = r"{}/{}".format(tempdirname ,)
+            seperator.create_dir_name(
+                'femjoy_Ellen - Bedtime Story') == tempdirname + '/' + 'femjoy_Ellen - Bedtime Story'
 

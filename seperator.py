@@ -70,9 +70,9 @@ def create_dir_name(dir_name):
             count += 1
             tmp_dir_name = r'{0:s}_({1:2d})'.format(dir_name, count)
         dir_name = tmp_dir_name
-    pwd = os.getcwd() + r'\\'
-    pwd += dir_name
-    return os.mkdir(pwd)
+    pwd = "{}/{}".format(os.getcwd(), dir_name)
+    path = os.mkdir(pwd)
+    return path
 
 
 def move_to_folders(files: dict):
@@ -97,7 +97,7 @@ def move_to_folders(files: dict):
 
 def parse_files_create_folder(folder_name):
     folders_and_files = collect_similar_names(folder_name)
-    move_to_folders(folders_and_files)
+    move_to_folders( folders_and_files)
 
 if __name__ == '__main__':
     file = "foo.txt"
