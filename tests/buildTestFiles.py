@@ -4,8 +4,8 @@ The content does not have to be different.
 
 '''
 def create_files():
-    dir = 'tests/data2'
-    file_name = 'tests/data/ArloReceipt.jpg'
+    dir = 'data2'
+    file_name = 'data/ArloReceipt.jpg'
     suffix = '.jpg'
     names = ['data01', 'data02', 'data03']
     filecontents = open(file_name, 'rb').read() #  b is important -> binary

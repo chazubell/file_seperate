@@ -1,3 +1,4 @@
+#! python
 # -*- coding: utf-8 -*-
 """
 Created on Wed Apr  6 04:40:05 2022
@@ -11,8 +12,10 @@ import os
 from os import walk
 import shutil
 
-regex = re.compile(r'^(?!\.)(.*)(_(\(?\d+|_cover(-clean)?)\)?\.(jpg|wmv|mp4|jpeg))$')
+regex = re.compile(r'^(?!\.)(.*)([-_ ](\(?\d+[a-z]?|_cover\d?(-clean)?|_sb)\)?\.(jpe?g|wmv|mp4|png))$',flags=re.IGNORECASE)
 
+def get_folders(folder_name):
+    
 
 def get_command_line():
     folders = []
@@ -102,22 +105,26 @@ def move_to_folders(files: dict, path = '.'):
                 dst = directory
                 try:
                     return_val = shutil.move(file, directory)
-                except sys.audit as event_str:
+                except FileNotFoundError as event_str:
                     print("Error: When create directory {} error {} was thrown\n".format(directory, event_str) )
-                expected_value = "{}/{}".format(directory, file)
+                # expected_value = "{}/{}".format(directory, file)
     return moved_files
 
 def parse_files_create_folder(folder_name):
     folders_and_files = collect_similar_names(folder_name)
     move_to_folders( folders_and_files)
 
+
 if __name__ == '__main__':
-    file = "tests/foo.txt"
-    #pwd = os.getcwd()
-    #os.chdir(pwd)
-    # pwd += '\\' + 'foo.txt'
-    keys = collect_similar_names(file)
-    move_to_folders(keys)
+
+    files = get_command_line()
+    if files == None:
+        files[0] = os.getcwd()
+    for file in files:
+        os.chdir(file)
+        dir = os.getcwd()
+        keys = collect_similar_names(dir)
+        move_to_folders(keys)
 
 
 
