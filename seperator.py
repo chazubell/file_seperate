@@ -14,7 +14,7 @@ import shutil
 
 regex = re.compile(r'^(?!\.)(.*)([-_ ](\(?\d+[a-z]?|_cover\d?(-clean)?|_sb)\)?\.(jpe?g|wmv|mp4|png))$',flags=re.IGNORECASE)
 
-def get_folders(folder_name):
+#def get_folders(folder_name):
     
 
 def get_command_line():
